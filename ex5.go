@@ -34,12 +34,7 @@ func worker(
 		select {
 		case limit <- struct{}{}:
 		case <-ctx.Done():
-			select {
-			case <-limit:
-				return
-			case <-ctx.Done():
-				return
-			}
+			return
 		}
 
 		wait := rand.Intn(3)
@@ -53,33 +48,17 @@ func worker(
 		select {
 		case job, ok := <-jobs:
 			if !ok {
-				select {
-				case <-limit:
-					return
-				case <-ctx.Done():
-					return
-				}
+				<-limit
+				return
 			}
 			if wait == 0 {
 				errors <- job
-				select {
-				case _, ok := <-limit:
-					if !ok {
-						return
-					}
-					continue
-				case <-ctx.Done():
-					return
-				}
+				<-limit
+				continue
 			}
 			result <- ResultEx5{job, job * job, wait, retries[job]}
 		case <-ctx.Done():
-			select {
-			case <-limit:
-				return
-			case <-ctx.Done():
-				return
-			}
+			return
 		}
 
 		select {
