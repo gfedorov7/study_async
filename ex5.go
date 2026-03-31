@@ -97,7 +97,6 @@ func errorHandler(
 	errors chan int,
 	jobs chan int,
 	retries map[int]int) {
-	//defer wg.Done()
 
 	for {
 		select {
