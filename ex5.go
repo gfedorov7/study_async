@@ -80,7 +80,6 @@ func worker(
 			case <-ctx.Done():
 				return
 			}
-			return
 		}
 
 		select {
